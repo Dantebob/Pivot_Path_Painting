@@ -3,6 +3,8 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 let paused = false;
+let arrow1Running = true;
+let arrow2Running = true;
 
  // Trail settings
 const trailCanvas = document.createElement("canvas");
@@ -139,25 +141,37 @@ document.addEventListener("keydown", function(event) {
         case "arrowup":
         case "w":
             arrow_1.CW = 0;
+            arrow1Running = true;
             break;
 
         case "arrowdown":
         case "s":
             arrow_1.CW = 1;
+            arrow1Running = true;
             break;
 
         case "arrowleft":
         case "a":
             arrow_2.CW = 0;
+            arrow2Running = true;
             break;
 
         case "arrowright":
         case "d":
             arrow_2.CW = 1;
+            arrow2Running = true;
             break;
         
         case "p":
             paused = !paused;
+            break;
+
+        case "q":
+            arrow1Running = !arrow1Running;
+            break;
+
+        case "e":
+            arrow2Running = !arrow2Running;
             break;
     }
 });
@@ -294,16 +308,22 @@ function animate(time) {
         drawPauseSymbol();
         return;
     }
-    // Rotate both arrows
-    if (arrow_1.CW === 0) {
-        arrow_1.angle -= arrow_1.speed * delta_t;
-    } else {
-        arrow_1.angle += arrow_1.speed * delta_t;
+
+    // Rotate Arrow 1 only when it is running
+    if (arrow1Running) {
+        if (arrow_1.CW === 0) {
+            arrow_1.angle -= arrow_1.speed * delta_t;
+        } else {
+            arrow_1.angle += arrow_1.speed * delta_t;
+        }
     }
-    if (arrow_2.CW === 0) {
-        arrow_2.angle -= arrow_2.speed * delta_t;
-    } else {
-        arrow_2.angle += arrow_2.speed * delta_t;
+    // Rotate Arrow 2 only when it is running
+    if (arrow2Running) {
+        if (arrow_2.CW === 0) {
+            arrow_2.angle -= arrow_2.speed * delta_t;
+        } else {
+            arrow_2.angle += arrow_2.speed * delta_t;
+        }
     }
 
     // Update the moving pivot after rotating arrow_1
