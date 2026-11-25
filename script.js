@@ -2,10 +2,7 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-<<<<<<< HEAD
 //controls change based on device
-const isTouchDevice =
-    window.matchMedia("(pointer: coarse)").matches;
 const keyboardControls =
     document.getElementById("keyboardControls");
 
@@ -24,8 +21,6 @@ function updateControls() {
 }
 updateControls();
 
-=======
->>>>>>> origin/main
 let paused = false;
 let arrow1Running = true;
 let arrow2Running = true;
@@ -41,11 +36,8 @@ const trailColor = "#ff4fd8";
 const trailWidth = 8;
 
 // Clear the trail after this many full rotations of arrow_1
-<<<<<<< HEAD
+
 let Rotations_til_refresh = 5
-=======
-let Rotations_til_refresh = 3
->>>>>>> origin/main
 const trailLifetime = () =>
     Rotations_til_refresh * 2 * Math.PI / Math.abs(arrow_1.speed);
 
@@ -64,7 +56,7 @@ const arrow_1 = {
     length: 100,
     angle: 0,
     CW: 0, // 0: Counter-Clockwise, 1: Clockwise
-    speed: Math.PI / 2
+    speed: Math.PI
     //speed is radians per second
 };
 
@@ -80,21 +72,13 @@ const arrow_2 = {
     length: 100,
     angle: 0,
     CW: 0, // 0: Counter-Clockwise, 1: Clockwise
-    speed: Math.PI / 2
+    speed: Math.PI
     //speed is radians per second
 };  
 
 /* ARROW SPEED AND TRAIL CONTROLS */ //@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 const speedPanel = document.getElementById("speedPanel");
 
-<<<<<<< HEAD
-const speedOptions = Array.from(
-    { length: 32 },
-    (_, i) => (i + 1) / 16
-);
-
-=======
->>>>>>> origin/main
 function createSlider(name, min, max, step, initialValue, onChange) {
     const container = document.createElement("div");
     container.className = "speed-control";
@@ -102,7 +86,6 @@ function createSlider(name, min, max, step, initialValue, onChange) {
     const label = document.createElement("label");
     const valueDisplay = document.createElement("span");
 
-<<<<<<< HEAD
     // DISPLAY SPEED rotations per second
     const formatValue = value => {
         if (name.includes("speed")) {
@@ -112,10 +95,7 @@ function createSlider(name, min, max, step, initialValue, onChange) {
         return value;
     };
     valueDisplay.textContent = formatValue(initialValue);
-=======
-    valueDisplay.textContent =
-        step < 1 ? initialValue.toFixed(2) : initialValue;
->>>>>>> origin/main
+
 
     label.textContent = name + ": ";
     label.appendChild(valueDisplay);
@@ -130,13 +110,7 @@ function createSlider(name, min, max, step, initialValue, onChange) {
     slider.addEventListener("input", () => {
         const value = Number(slider.value);
 
-<<<<<<< HEAD
         valueDisplay.textContent = formatValue(value);
-=======
-        valueDisplay.textContent =
-            step < 1 ? value.toFixed(2) : value;
->>>>>>> origin/main
-
         onChange(value);
     });
 
@@ -145,44 +119,25 @@ function createSlider(name, min, max, step, initialValue, onChange) {
     speedPanel.appendChild(container);
 }
 
-<<<<<<< HEAD
 // Arrow 1 speed: 0 to 4π, in increments of π/8 radians per second
-// display rev/s
-createSlider("Arrow 1 speed (rev/s)", 1, 32, 1,
-    8, value => {
+// display starts at 1 rev/s or 16/8 rad/s
+createSlider("Arrow 1 speed (rev/s)", 1, 32, 1, 16, value => {
         arrow_1.speed = value * Math.PI / 8;
     }
 );
 // Arrow 2 speed: 0 to 4π, in increments of π/8 radians per second
-// display rev/s
-createSlider("Arrow 2 speed (rev/s)", 1, 32, 1,
-    8, value => {
+// display starts at 1 rev/s or 16/8 rad/s
+createSlider("Arrow 2 speed (rev/s)", 1, 32, 1, 16, value => {
         arrow_2.speed = value * Math.PI / 8;
     }
 );
 
 createSlider("Trail refresh (rotations)", 5, 100, 5,
-=======
-createSlider("Arrow 1 speed (rad/s)", 0, 5, 0.01,
-    arrow_1.speed, value => {
-        arrow_1.speed = value;
-    }
-);
-
-createSlider("Arrow 2 speed (rad/s)", 0, 5, 0.01,
-    arrow_2.speed, value => {
-        arrow_2.speed = value;
-    }
-);
-
-createSlider("Trail refresh (rotations)", 1, 10, 1,
->>>>>>> origin/main
     Rotations_til_refresh, value => {
         Rotations_til_refresh = value;
     }
 );
 
-<<<<<<< HEAD
 createSlider("Arrow 1 length", 0, 200, 10,
     arrow_1.length, value => {
         arrow_1.length = value;
@@ -194,36 +149,10 @@ createSlider("Arrow 2 length", 0, 200, 10,
         arrow_2.length = value;
     }
 );
-=======
-// CONTROLS @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-const MIN_LENGTH = 10;
-const MAX_LENGTH = 300;
-const LENGTH_STEP = 5;
 
-// Mouse wheel changes arrow_2 length
-canvas.addEventListener("wheel", function(event) {
-    event.preventDefault();
-
-    if (event.deltaY < 0) {
-        // Scroll up: increase length
-        arrow_2.length += LENGTH_STEP;
-    } else {
-        // Scroll down: decrease length
-        arrow_2.length -= LENGTH_STEP;
-    }
-
-    // Keep the length within limits
-    arrow_2.length = Math.max(
-        MIN_LENGTH,
-        Math.min(MAX_LENGTH, arrow_2.length)
-    );
-}, { passive: false });
->>>>>>> origin/main
-
-// Keyboard controls
+// CONTROLS  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 document.addEventListener("keydown", function(event) {
     switch (event.key.toLowerCase()) {
-<<<<<<< HEAD
         // Arrow_1 
         case "d":
             arrow_1.CW = 0;
@@ -286,45 +215,6 @@ document.getElementById("arrow2CW").addEventListener("click", () => {
     arrow2Running = true;
 });
 
-=======
-        case "arrowup":
-        case "w":
-            arrow_1.CW = 0;
-            arrow1Running = true;
-            break;
-
-        case "arrowdown":
-        case "s":
-            arrow_1.CW = 1;
-            arrow1Running = true;
-            break;
-
-        case "arrowleft":
-        case "a":
-            arrow_2.CW = 0;
-            arrow2Running = true;
-            break;
-
-        case "arrowright":
-        case "d":
-            arrow_2.CW = 1;
-            arrow2Running = true;
-            break;
-        
-        case "p":
-            paused = !paused;
-            break;
-
-        case "q":
-            arrow1Running = !arrow1Running;
-            break;
-
-        case "e":
-            arrow2Running = !arrow2Running;
-            break;
-    }
-});
->>>>>>> origin/main
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 function updatePivot() {
