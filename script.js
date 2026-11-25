@@ -2,6 +2,27 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
+//controls change based on device
+const isTouchDevice =
+    window.matchMedia("(pointer: coarse)").matches;
+const keyboardControls =
+    document.getElementById("keyboardControls");
+
+const mobileControls =
+    document.getElementById("mobileControls");
+
+function updateControls() {
+    const useTouchControls =
+        window.matchMedia("(pointer: coarse)").matches;
+
+    mobileControls.style.display =
+        useTouchControls ? "flex" : "none";
+
+    keyboardControls.style.display =
+        useTouchControls ? "none" : "block";
+}
+updateControls();
+
 let paused = false;
 let arrow1Running = true;
 let arrow2Running = true;
@@ -17,7 +38,7 @@ const trailColor = "#ff4fd8";
 const trailWidth = 8;
 
 // Clear the trail after this many full rotations of arrow_1
-let Rotations_til_refresh = 3
+let Rotations_til_refresh = 5
 const trailLifetime = () =>
     Rotations_til_refresh * 2 * Math.PI / Math.abs(arrow_1.speed);
 
@@ -59,6 +80,11 @@ const arrow_2 = {
 /* ARROW SPEED AND TRAIL CONTROLS */ //@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 const speedPanel = document.getElementById("speedPanel");
 
+const speedOptions = Array.from(
+    { length: 32 },
+    (_, i) => (i + 1) / 16
+);
+
 function createSlider(name, min, max, step, initialValue, onChange) {
     const container = document.createElement("div");
     container.className = "speed-control";
@@ -66,8 +92,15 @@ function createSlider(name, min, max, step, initialValue, onChange) {
     const label = document.createElement("label");
     const valueDisplay = document.createElement("span");
 
-    valueDisplay.textContent =
-        step < 1 ? initialValue.toFixed(2) : initialValue;
+    // DISPLAY SPEED rotations per second
+    const formatValue = value => {
+        if (name.includes("speed")) {
+            return `${(value / 16).toFixed(4)} rev/s`;
+        }
+
+        return value;
+    };
+    valueDisplay.textContent = formatValue(initialValue);
 
     label.textContent = name + ": ";
     label.appendChild(valueDisplay);
@@ -82,8 +115,7 @@ function createSlider(name, min, max, step, initialValue, onChange) {
     slider.addEventListener("input", () => {
         const value = Number(slider.value);
 
-        valueDisplay.textContent =
-            step < 1 ? value.toFixed(2) : value;
+        valueDisplay.textContent = formatValue(value);
 
         onChange(value);
     });
@@ -93,88 +125,104 @@ function createSlider(name, min, max, step, initialValue, onChange) {
     speedPanel.appendChild(container);
 }
 
-createSlider("Arrow 1 speed (rad/s)", 0, 5, 0.01,
-    arrow_1.speed, value => {
-        arrow_1.speed = value;
+// Arrow 1 speed: 0 to 4π, in increments of π/8 radians per second
+// display rev/s
+createSlider("Arrow 1 speed (rev/s)", 1, 32, 1,
+    8, value => {
+        arrow_1.speed = value * Math.PI / 8;
+    }
+);
+// Arrow 2 speed: 0 to 4π, in increments of π/8 radians per second
+// display rev/s
+createSlider("Arrow 2 speed (rev/s)", 1, 32, 1,
+    8, value => {
+        arrow_2.speed = value * Math.PI / 8;
     }
 );
 
-createSlider("Arrow 2 speed (rad/s)", 0, 5, 0.01,
-    arrow_2.speed, value => {
-        arrow_2.speed = value;
-    }
-);
-
-createSlider("Trail refresh (rotations)", 1, 10, 1,
+createSlider("Trail refresh (rotations)", 5, 100, 5,
     Rotations_til_refresh, value => {
         Rotations_til_refresh = value;
     }
 );
 
-// CONTROLS @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-const MIN_LENGTH = 10;
-const MAX_LENGTH = 300;
-const LENGTH_STEP = 5;
-
-// Mouse wheel changes arrow_2 length
-canvas.addEventListener("wheel", function(event) {
-    event.preventDefault();
-
-    if (event.deltaY < 0) {
-        // Scroll up: increase length
-        arrow_2.length += LENGTH_STEP;
-    } else {
-        // Scroll down: decrease length
-        arrow_2.length -= LENGTH_STEP;
+createSlider("Arrow 1 length", 0, 200, 10,
+    arrow_1.length, value => {
+        arrow_1.length = value;
     }
+);
 
-    // Keep the length within limits
-    arrow_2.length = Math.max(
-        MIN_LENGTH,
-        Math.min(MAX_LENGTH, arrow_2.length)
-    );
-}, { passive: false });
+createSlider("Arrow 2 length", 0, 200, 10,
+    arrow_2.length, value => {
+        arrow_2.length = value;
+    }
+);
 
 // Keyboard controls
 document.addEventListener("keydown", function(event) {
     switch (event.key.toLowerCase()) {
-        case "arrowup":
-        case "w":
+        // Arrow_1 
+        case "d":
             arrow_1.CW = 0;
             arrow1Running = true;
             break;
-
-        case "arrowdown":
-        case "s":
+        case "f":
             arrow_1.CW = 1;
             arrow1Running = true;
             break;
-
-        case "arrowleft":
-        case "a":
-            arrow_2.CW = 0;
-            arrow2Running = true;
-            break;
-
-        case "arrowright":
-        case "d":
-            arrow_2.CW = 1;
-            arrow2Running = true;
-            break;
-        
-        case "p":
-            paused = !paused;
-            break;
-
-        case "q":
+        case "s":
             arrow1Running = !arrow1Running;
             break;
 
-        case "e":
+        // Arrow_2 
+        case "j":
+            arrow_2.CW = 0;
+            arrow2Running = true;
+            break;
+        case "k":
+            arrow_2.CW = 1;
+            arrow2Running = true;
+            break;
+        case "l":
             arrow2Running = !arrow2Running;
+            break;
+        
+        case " ":
+            paused = !paused;
             break;
     }
 });
+
+//Mobile controls
+document.getElementById("arrow1CCW").addEventListener("click", () => {
+    arrow_1.CW = 0;
+    arrow1Running = true;
+});
+
+document.getElementById("arrow1Stop").addEventListener("click", () => {
+    arrow1Running = false;
+});
+
+document.getElementById("arrow1CW").addEventListener("click", () => {
+    arrow_1.CW = 1;
+    arrow1Running = true;
+});
+
+// Arrow 2 controls
+document.getElementById("arrow2CCW").addEventListener("click", () => {
+    arrow_2.CW = 0;
+    arrow2Running = true;
+});
+
+document.getElementById("arrow2Stop").addEventListener("click", () => {
+    arrow2Running = false;
+});
+
+document.getElementById("arrow2CW").addEventListener("click", () => {
+    arrow_2.CW = 1;
+    arrow2Running = true;
+});
+
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 function updatePivot() {

@@ -10,33 +10,44 @@
 <body>
     <h1>Rotating Arrow Game</h1>
     <canvas id="gameCanvas" width="800" height="600"></canvas>
-
+    
 <div id="controls-layout">
-
-    <div id="controls">
-        <h2>Controls</h2>
-
-        <div class="control-section">
-            <h3>Arrow 1 — Cyan</h3>
-            <p><kbd>W</kbd> / <kbd>↑</kbd> Counterclockwise</p>
-            <p><kbd>S</kbd> / <kbd>↓</kbd> Clockwise</p>
+    <div id="keyboardControls">
+        <div id="controls">
+            <h2>Controls</h2>
+            <div class="control-section">
+                <h3>Arrow 1 — Cyan</h3>
+                <p><kbd>D</kbd> Counterclockwise</p>
+                <p><kbd>F</kbd> Clockwise</p>
+                <p><kbd>S</kbd> Toggle Arrow 1 rotation</p>
+            </div>
+            <div class="control-section">
+                <h3>Arrow 2 — Orange</h3>
+                <p><kbd>J</kbd> Counterclockwise</p>
+                <p><kbd>K</kbd> Clockwise</p>
+                <p><kbd>L</kbd> Toggle Arrow 2 rotation</p>
+            </div>
+            <p><kbd>Space</kbd> Pause / Resume</p>
         </div>
-
-        <div class="control-section">
-            <h3>Arrow 2 — Orange</h3>
-            <p><kbd>A</kbd> / <kbd>←</kbd> Counterclockwise</p>
-            <p><kbd>D</kbd> / <kbd>→</kbd> Clockwise</p>
-            <p>Scroll the mouse wheel over the game to change length.</p>
-        </div>
-        <p><kbd>Q</kbd> Toggle Arrow 1 rotation</p>
-        <p><kbd>E</kbd> Toggle Arrow 2 rotation</p>
-        <p><kbd>P</kbd> Pause / Resume</p>
-    </div>
 
     <div id="speedPanel">
         <h2>Animation Settings</h2>
     </div>
-
+</div>
+<div id="mobileControls">
+        <div class="arrow-controls arrow1-controls">
+            <h2>Arrow 1</h2>
+            <button id="arrow1CCW">↶ CCW</button>
+            <button id="arrow1Stop" class="stop-button">■ STOP</button>
+            <button id="arrow1CW">↷ CW</button>
+        </div>
+        <div class="arrow-controls arrow2-controls">
+            <h2>Arrow 2</h2>
+            <button id="arrow2CCW">↶ CCW</button>
+            <button id="arrow2Stop" class="stop-button">■ STOP</button>
+            <button id="arrow2CW">↷ CW</button>
+        </div>
+    </div>
 </div>
 
 
